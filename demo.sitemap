@@ -1,0 +1,21 @@
+	Frame label="Прихожая" {
+		Switch item=Switch3 mappings=[ON="Включить", OFF="Выключить"]
+	}
+	
+	Frame label="Катя" {
+		Switch item=Switch4 mappings=[ON="Включить", OFF="Выключить"]
+	}
+	
+	Frame label="Никита" {
+		Switch item=Switch5 mappings=[ON="Включить", OFF="Выключить"]
+	}
+	
+	Frame label="Спальня" {
+		Switch item=Switch6 mappings=[ON="Включить", OFF="Выключить"]
+		Switch item=Switch7 mappings=[ON="Включить", OFF="Выключить"]
+	}
+	
+	Frame label="Погода" {	
+		Text item=Temp_Balkon icon="temperature"
+		Text item=Pressure_Balkon icon="temperature"
+	}
