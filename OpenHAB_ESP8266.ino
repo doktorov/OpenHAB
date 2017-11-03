@@ -6,6 +6,8 @@
 
 #include <RCSwitch.h>
 
+#define CLIENT_NAME "clientSwitch"
+
 Adafruit_BMP280 bmp; // I2C
 
 const char *ssid =  "Ntk-39";  // Имя вайфай точки доступа
@@ -75,7 +77,7 @@ void setup_wifi() {
 void reconnect() {
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
-    if (client.connect("arduinoClient2")) {
+    if (client.connect(CLIENT_NAME)) {
       Serial.println("connected");
 
       client.subscribe("hall/switch");
@@ -105,7 +107,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 void tempSend() {
   if (tm == 0) {
-    if (client.connect("arduinoClient2")) {
+    if (client.connect(CLIENT_NAME)) {
       sprintf(t1, "%s", String(bmp.readTemperature()).c_str());
       Serial.print("Temperature = ");
       Serial.println(t1);
