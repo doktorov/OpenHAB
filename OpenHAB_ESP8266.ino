@@ -78,7 +78,6 @@ void reconnect() {
     if (client.connect("arduinoClient2")) {
       Serial.println("connected");
 
-      client.subscribe("test/led");
       client.subscribe("hall/switch");
     } else {
       Serial.print("failed, rc=");
