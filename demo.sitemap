@@ -1,21 +1,27 @@
 	Frame label="Прихожая" {
-		Switch item=Switch3 mappings=[ON="Включить", OFF="Выключить"]
+		Switch item=SwitchHallway mappings=[ON="Включить", OFF="Выключить"]
 	}
 	
 	Frame label="Катя" {
-		Switch item=Switch4 mappings=[ON="Включить", OFF="Выключить"]
+		Switch item=SwitchKate mappings=[ON="Включить", OFF="Выключить"]
 	}
 	
 	Frame label="Никита" {
-		Switch item=Switch5 mappings=[ON="Включить", OFF="Выключить"]
+		Switch item=SwitchNikita mappings=[ON="Включить", OFF="Выключить"]
 	}
 	
 	Frame label="Спальня" {
-		Switch item=Switch6 mappings=[ON="Включить", OFF="Выключить"]
-		Switch item=Switch7 mappings=[ON="Включить", OFF="Выключить"]
+		Switch item=SwitchBedroom1 mappings=[ON="Включить", OFF="Выключить"]
+		Switch item=SwitchBedroom2 mappings=[ON="Включить", OFF="Выключить"]
 	}
 	
-	Frame label="Погода" {	
+	Frame label="Дом" {	
 		Text item=Temp_Balkon icon="temperature"
-		Text item=Pressure_Balkon icon="temperature"
+		Text item=Pressure_Balkon icon="pressure"
+	}
+	
+	Frame label="Погода на улице" {	
+		Text item=Temp_Street icon="temperature"
+		Text item=Pressure_Street icon="pressure"
+		Text item=Humidity_Street icon="humidity"
 	}
