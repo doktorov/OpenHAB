@@ -23,7 +23,7 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 
 #define LOCAL_TIMER 300
-#define NARODMON_TIMER 600000
+#define NARODMON_TIMER 60000
 
 int tmLocal = 0;
 int tmNarodMon = 0;
