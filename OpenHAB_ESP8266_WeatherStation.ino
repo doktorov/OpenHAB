@@ -16,17 +16,17 @@ const int mqtt_port = 1883; // Порт для подключения к сер�
 const char *mqtt_user = "openhabian"; // Логи от сервер
 const char *mqtt_pass = "openhabian"; // Пароль от сервера
 
-const char* narodmon_host = "narodmon.ru";
-const int narodmon_port = 8283;
+//const char* narodmon_host = "narodmon.ru";
+//const int narodmon_port = 8283;
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
 #define LOCAL_TIMER 300
-#define NARODMON_TIMER 60000
+//#define NARODMON_TIMER 60000
 
 int tmLocal = 0;
-int tmNarodMon = 0;
+//int tmNarodMon = 0;
 char t1[20];
 
 void setup() {
@@ -111,48 +111,48 @@ void tempSend() {
   }
   tmLocal--;
 
-  if (tmNarodMon == 0) {
-    if (WiFi.status() == WL_CONNECTED) {
-      if (espClient.connect(narodmon_host, narodmon_port)) {
-        Serial.println("Narod Monitoring sending...");
-        // заголовок
-        espClient.print("#");
-        espClient.print(WiFi.macAddress()); // отправляем МАС нашей ESP8266
-        espClient.print("#");
-        espClient.print("ESP8266+BME280"); // название устройства
-        espClient.print("#");
-        espClient.print("54.940994#83.184592"); // координаты местонахождения датчика
-        espClient.println();
-
-        espClient.print("#T1#");
-        espClient.print(bme.readTemperature());
-        espClient.print("#Температура");
-        espClient.println();
-
-        espClient.print("#H1#");
-        espClient.print(bme.readHumidity());        
-        espClient.print("#Влажность");
-        espClient.println();
-
-        espClient.print("#P1#");
-        espClient.print(bme.readPressure() / 100 * 0.75);
-        espClient.print("#Атм. давление");
-        espClient.println();
-
-        espClient.print("##");
-
-        // читаем ответ с и отправляем его в сериал
-        // вообще на ответ нужно както реагировать
-        Serial.print("Requesting: ");
-        while (espClient.available()) {
-          String line = espClient.readStringUntil('\r');
-          Serial.print(line);
-        }
-      }
-    }
-    tmNarodMon = NARODMON_TIMER;
-  }
-  tmNarodMon--;
+//  if (tmNarodMon == 0) {
+//    if (WiFi.status() == WL_CONNECTED) {
+//      if (espClient.connect(narodmon_host, narodmon_port)) {
+//        Serial.println("Narod Monitoring sending...");
+//        // заголовок
+//        espClient.print("#");
+//        espClient.print(WiFi.macAddress()); // отправляем МАС нашей ESP8266
+//        espClient.print("#");
+//        espClient.print("ESP8266+BME280"); // название устройства
+//        espClient.print("#");
+//        espClient.print("54.940994#83.184592"); // координаты местонахождения датчика
+//        espClient.println();
+//
+//        espClient.print("#T1#");
+//        espClient.print(bme.readTemperature());
+//        espClient.print("#Температура");
+//        espClient.println();
+//
+//        espClient.print("#H1#");
+//        espClient.print(bme.readHumidity());        
+//        espClient.print("#Влажность");
+//        espClient.println();
+//
+//        espClient.print("#P1#");
+//        espClient.print(bme.readPressure() / 100 * 0.75);
+//        espClient.print("#Атм. давление");
+//        espClient.println();
+//
+//        espClient.print("##");
+//
+//        // читаем ответ с и отправляем его в сериал
+//        // вообще на ответ нужно както реагировать
+//        Serial.print("Requesting: ");
+//        while (espClient.available()) {
+//          String line = espClient.readStringUntil('\r');
+//          Serial.print(line);
+//        }
+//      }
+//    }
+//    tmNarodMon = NARODMON_TIMER;
+//  }
+//  tmNarodMon--;
 
   delay(10);
 }
