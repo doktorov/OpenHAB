@@ -1,1 +1,9 @@
-
+rule "Send to narodmon.ru"
+	when
+		Time cron "0 0/5 * * * ?"
+	then
+		publish("narodmon", "dem_s/BME280/T1", String::format("%s", Temp_Street.state))
+		publish("narodmon", "dem_s/BME280/H1", String::format("%s", Humidity_Street.state))
+		publish("narodmon", "dem_s/BME280/P1", String::format("%s", Pressure_Street.state))
+		publish("narodmon", "dem_s/BME280/T0", String::format("%s", Temp_Street.state))		
+end
