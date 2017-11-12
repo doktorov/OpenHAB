@@ -10,3 +10,4 @@ Switch SwitchBedroom2 "" {mqtt=">[ohmqtt:hall/switch:command:ON:897442],>[ohmqtt
 Number Temp_Street "Температура[%.2f °C]" {mqtt="<[ohmqtt:street/temp_street:state:default]"}
 Number Pressure_Street "Давление[%.2f Па]" {mqtt="<[ohmqtt:street/pressure_street:state:default]"}
 Number Humidity_Street "Влажность[%.2f %%]" {mqtt="<[ohmqtt:street/humidity_street:state:default]"}
+Switch SwitchKitchen "" {mqtt=">[ohmqtt:hall/switch:command:ON:899000],>[ohmqtt:hall/switch:command:OFF:899001]"}
