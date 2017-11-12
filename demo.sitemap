@@ -2,6 +2,10 @@
 		Switch item=SwitchHallway icon="corridor" mappings=[ON="Включить", OFF="Выключить"]
 	}
 	
+	Frame label="Кухня" {
+		Switch item=SwitchKitchen icon="kitchen" mappings=[ON="Включить", OFF="Выключить"]
+	}
+	
 	Frame label="Катя" {
 		Switch item=SwitchKate icon="girl_5" mappings=[ON="Включить", OFF="Выключить"]
 	}
