@@ -1,3 +1,5 @@
+#include <EEPROM.h>
+
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
@@ -7,6 +9,8 @@
 
 #define PIN_ONOFF D0
 #define PIN D2
+
+#define RGB_NUMPIXELS   8
 
 const char *ssid =  "Ntk-39";  // Имя вайфай точки доступа
 const char *password =  "506938506938"; // Пароль от точки доступа
@@ -19,7 +23,7 @@ const int mqtt_port = 1883; // Порт для подключения к сер�
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(8, PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(RGB_NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
 int val = 0;
 
@@ -34,14 +38,34 @@ int blue = 127;
 
 int repeat = 0;
 
+int matrixPos;
+
+#define ADDRESS_SELECTED_TYPE         0
+#define ADDRESS_SELECTED_BRIGHTNESS   1
+#define ADDRESS_SELECTED_RED          2
+#define ADDRESS_SELECTED_GREEN        3
+#define ADDRESS_SELECTED_BLUE         4
+
 void setup() {
+  EEPROM.begin(512);
+  
+  strip.setBrightness(brightness);
+  strip.begin();
+  strip.show();
+
   Serial.begin(115200);
 
   pinMode(PIN_ONOFF, INPUT);
 
-  strip.setBrightness(brightness);
-  strip.begin();
-  strip.show();
+  select_type = EEPROM.read(ADDRESS_SELECTED_TYPE);
+  brightness = EEPROM.read(ADDRESS_SELECTED_BRIGHTNESS);
+  red = EEPROM.read(ADDRESS_SELECTED_RED);
+  green = EEPROM.read(ADDRESS_SELECTED_GREEN);
+  blue = EEPROM.read(ADDRESS_SELECTED_BLUE);
+  
+  Serial.print("select_type - ");  
+  Serial.print(select_type, DEC);
+  Serial.println();
 
   setup_wifi();
 
@@ -54,9 +78,13 @@ void loop() {
 
   val = digitalRead(PIN_ONOFF);
   if (val == 0) {
+    brightness = EEPROM.read(ADDRESS_SELECTED_BRIGHTNESS);
+    
     strip.setBrightness(brightness * 2.5);
     strip.begin();
     strip.show();
+
+    select_type = EEPROM.read(ADDRESS_SELECTED_TYPE);
 
     switch (select_type) {
       case 0:
@@ -65,22 +93,20 @@ void loop() {
       case 1:
         fire();
         break;
-      case 2:       
-        if (repeat == 0) {          
-          rainbow(20);
-        }
-
-        if (repeat == 21) {
-          repeat = 0;
-        }
-
-        repeat++;
+      case 2:
+        rainbowMatrix();        
         break;
       case 3:
         rainbowCycle(20);
         break;
       case 4:
         theaterChaseRainbow(50);
+        break;
+      case 5:
+        rainbow(20);
+        break;
+      default:
+        white();
         break;
     }
   } else {
@@ -148,34 +174,82 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   if (String(topic) == "katyled/brightness") {
     brightness = param.toInt();
+
+    EEPROM.write(ADDRESS_SELECTED_BRIGHTNESS, brightness);
+    EEPROM.commit();
   }
   if (String(topic) == "katyled/colour/red") {
     red = param.toInt();
+
+    EEPROM.write(ADDRESS_SELECTED_RED, red);
+    EEPROM.commit();
   }
   if (String(topic) == "katyled/colour/green") {
     green = param.toInt();
+
+    EEPROM.write(ADDRESS_SELECTED_GREEN, green);
+    EEPROM.commit();    
   }
   if (String(topic) == "katyled/colour/blue") {
     blue = param.toInt();
+
+    EEPROM.write(ADDRESS_SELECTED_BLUE, blue);
+    EEPROM.commit();    
   }
   if (String(topic) == "katyled/type/lamp") {
     select_type = param.toInt();
+    
+    EEPROM.write(ADDRESS_SELECTED_TYPE, select_type);
+    EEPROM.commit();
   }
 }
 
-
 void off() {
-  strip.setBrightness(0);
-  strip.begin();
+//  strip.setBrightness(0);
+//  strip.begin();
+  for (int x = 0; x < RGB_NUMPIXELS; x++) {
+    strip.setPixelColor(x, 0, 0, 0);
+  }
   strip.show();
 }
 
 void white() {
-  for (int x = 0; x < 8; x++) {
-    strip.setPixelColor(x, red, green, blue);
+  red = EEPROM.read(ADDRESS_SELECTED_RED);
+  green = EEPROM.read(ADDRESS_SELECTED_GREEN);
+  blue = EEPROM.read(ADDRESS_SELECTED_BLUE);
+  
+  for (int x = 0; x < RGB_NUMPIXELS; x++) {
+    switch (x) {
+      case 0:
+        strip.setPixelColor(x, red, green, blue);
+        break;
+      case 1:
+        strip.setPixelColor(x, red, green, blue);
+        break;
+      case 2:
+        strip.setPixelColor(x, red, green, blue);
+        break;
+      case 3:
+        strip.setPixelColor(x, red, green, blue);
+        break;
+      case 4:
+        strip.setPixelColor(x, red, green, blue);
+        break;
+      case 5:
+        strip.setPixelColor(x, red, green, blue);
+        break;
+      case 6:
+        strip.setPixelColor(x, red, green, blue);
+        break;
+      case 7:
+        strip.setPixelColor(x, red, green, blue);
+        break;
+    }
   }
 
   strip.show();
+
+  delay(random(50, 150));
 }
 
 void fire() {
@@ -183,7 +257,7 @@ void fire() {
   int g = r - 40;
   int b = 40;
 
-  for (int x = 0; x < 8; x++) {
+  for (int x = 0; x < RGB_NUMPIXELS; x++) {
     int flicker = random(0, 150);
     int r1 = r - flicker;
     int g1 = g - flicker;
@@ -198,15 +272,27 @@ void fire() {
   delay(random(50, 150));
 }
 
+void rainbowMatrix() {
+  for (int i = 0; i < RGB_NUMPIXELS; i++) {
+    strip.setPixelColor(i, Wheel(((i * 256 / RGB_NUMPIXELS) + matrixPos) & 255));
+  }
+  strip.show();
+
+  delay(20);
+
+  matrixPos++;
+  if (matrixPos == 1281) matrixPos = 0;
+}
+
 void rainbow(uint8_t wait) {
   uint16_t i, j;
 
   for (j = 0; j < 256; j++) {
-    for (i = 0; i < strip.numPixels(); i++) {
+    for (i = 0; i < RGB_NUMPIXELS; i++) {
       strip.setPixelColor(i, Wheel((i + j) & 255));
     }
     strip.show();
-    //delay(wait);
+    delay(wait);
   }
 }
 
@@ -214,7 +300,7 @@ void rainbowCycle(uint8_t wait) {
   uint16_t i, j;
 
   for (j = 0; j < 256 * 5; j++) { // 5 cycles of all colors on wheel
-    for (i = 0; i < strip.numPixels(); i++) {
+    for (i = 0; i < RGB_NUMPIXELS; i++) {
       strip.setPixelColor(i, Wheel(((i * 256 / strip.numPixels()) + j) & 255));
     }
     strip.show();
@@ -225,14 +311,14 @@ void rainbowCycle(uint8_t wait) {
 void theaterChaseRainbow(uint8_t wait) {
   for (int j = 0; j < 256; j++) {   // cycle all 256 colors in the wheel
     for (int q = 0; q < 3; q++) {
-      for (uint16_t i = 0; i < strip.numPixels(); i = i + 3) {
+      for (uint16_t i = 0; i < RGB_NUMPIXELS; i = i + 3) {
         strip.setPixelColor(i + q, Wheel( (i + j) % 255)); //turn every third pixel on
       }
       strip.show();
 
       delay(wait);
 
-      for (uint16_t i = 0; i < strip.numPixels(); i = i + 3) {
+      for (uint16_t i = 0; i < RGB_NUMPIXELS; i = i + 3) {
         strip.setPixelColor(i + q, 0);      //turn every third pixel off
       }
     }
