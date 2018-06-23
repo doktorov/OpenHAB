@@ -3,20 +3,20 @@
 
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
-#include <Adafruit_HTU21DF.h>
+//#include <Adafruit_HTU21DF.h>
 
-#define CLIENT_NAME "clientWeatherStation1"
+#define CLIENT_NAME "clientWeatherStation"
 
 Adafruit_BME280 bme; // I2C
-Adafruit_HTU21DF htu = Adafruit_HTU21DF();
+//Adafruit_HTU21DF htu = Adafruit_HTU21DF();
 
 const char *ssid =  "Ntk-39";  // Имя вайфай точки доступа
 const char *password =  "506938506938"; // Пароль от точки доступа
 
 const char *mqtt_server = "192.168.1.106"; // Имя сервера MQTT
 const int mqtt_port = 1883; // Порт для подключения к серверу MQTT
-const char *mqtt_user = ""; // Логи от сервер
-const char *mqtt_pass = ""; // Пароль от сервера
+const char *mqtt_user = "openhabian"; // Логи от сервер
+const char *mqtt_pass = "openhabian"; // Пароль от сервера
 
 //const char* narodmon_host = "narodmon.ru";
 //const int narodmon_port = 8283;
@@ -37,14 +37,14 @@ void setup() {
   Serial.println(F("BME280 test"));
   if (!bme.begin()) {
     Serial.println(F("Could not find a valid BMP280 sensor, check wiring!"));
-    //while (1);
+    while (1);
   }
 
-  Serial.println("HTU21D-F test");
-  if (!htu.begin()) {
-    Serial.println("Couldn't find sensor!");
-    //while (1);
-  }
+//  Serial.println("HTU21D-F test");
+//  if (!htu.begin()) {
+//    Serial.println("Couldn't find sensor!");
+//    //while (1);
+//  }
 
   setup_wifi();
 
@@ -103,28 +103,28 @@ void tempSend() {
         sprintf(t1, "%s", String(bme.readTemperature()).c_str());        
         Serial.print("Temperature = ");
         Serial.println(t1);
-        client.publish("street1/temp_street", t1);
+        client.publish("street/temp_street", t1);
 
         sprintf(t1, "%s", String(bme.readPressure() / 100 * 0.75).c_str());
         Serial.print("Pressure = ");
         Serial.println(t1);
-        client.publish("street1/pressure_street", t1);
+        client.publish("street/pressure_street", t1);
 
         sprintf(t1, "%s", String(bme.readHumidity()).c_str());        
         Serial.print("Humidity = ");
         Serial.println(t1);
-        client.publish("street1/humidity_street", t1);
+        client.publish("street/humidity_street", t1);
 
-        Serial.println("HTU21DF");
-        sprintf(t1, "%s", String(htu.readTemperature()).c_str());     
-        Serial.print("Temperature = ");
-        Serial.println(t1);
-        client.publish("street1/temp_badroom", t1);
-
-        sprintf(t1, "%s", String(htu.readHumidity()).c_str());  
-        Serial.print("Humidity = ");
-        Serial.println(t1);
-        client.publish("street1/humidity_badroom", t1);
+//        Serial.println("HTU21DF");
+//        sprintf(t1, "%s", String(htu.readTemperature()).c_str());     
+//        Serial.print("Temperature = ");
+//        Serial.println(t1);
+//        client.publish("street1/temp_badroom", t1);
+//
+//        sprintf(t1, "%s", String(htu.readHumidity()).c_str());  
+//        Serial.print("Humidity = ");
+//        Serial.println(t1);
+//        client.publish("street1/humidity_badroom", t1);
       }
     }
     tmLocal = LOCAL_TIMER;
