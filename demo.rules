@@ -1,9 +1,51 @@
+import org.openhab.core.library.types.*
+import java.awt.Color
+
+var Timer timer = null
+val resList = newArrayList("640/480", "320/240", "480/360")
+val urlList = newArrayList("https://www.fillmurray.com", "https://www.fillmurray.com/g",
+                 "https://www.placecage.com", "https://www.placecage.com/c", "https://www.placecage.com/g")
+val Random random = new Random()
+
 rule "Send to narodmon.ru"
 	when
 		Time cron "0 0/5 * * * ?"
 	then
-		publish("narodmon", "dem_s/BME280/T1", String::format("%s", Temp_Street.state))
-		publish("narodmon", "dem_s/BME280/H1", String::format("%s", Humidity_Street.state))
-		publish("narodmon", "dem_s/BME280/P1", String::format("%s", Pressure_Street.state))
-		publish("narodmon", "dem_s/BME280/T0", String::format("%s", Temp_Street.state))		
+		publish("narodmon", "dem_s/BME280/T1", String::format("%s", Temp_Street_South.state))
+		publish("narodmon", "dem_s/BME280/H1", String::format("%s", Humidity_Street_South.state))
+		publish("narodmon", "dem_s/BME280/P1", String::format("%s", Pressure_Street_South.state))
+		publish("narodmon", "dem_s/BME280/T0", String::format("%s", Temp_Street_North.state))		
+end
+
+rule "Change brightness lamp in Kate Room"
+	when
+		Item DimmedKateLED changed
+	then
+		publish("ohmqtt", "katyled/brightness", String::format("%s", DimmedKateLED.state))
+end
+
+rule "Change lamp RGB value in Kate Room"
+	when
+		Item ColorKateRGBLED changed
+	then
+		logInfo("RGB.ColorKateRGBLED", "ColorKateRGBLED changed: " + ColorKateRGBLED)
+		var hsbValue = ColorKateRGBLED.state as HSBType
+		
+		var Color color = Color::getHSBColor(hsbValue.hue.floatValue / 360, hsbValue.saturation.floatValue / 100, hsbValue.brightness.floatValue / 100)
+		
+		var redValue = (color.red.floatValue / 2.55).intValue
+		var greenValue = (color.green.floatValue / 2.55).intValue
+		var blueValue = (color.blue.floatValue / 2.55).intValue
+		logInfo("RGB.ColorKateRGBLED", "RED: "+ color.red.intValue + "% GREEN: "+ color.green +  "% BLUE: "+ color.blue + "%")
+			
+		publish("ohmqtt", "katyled/colour/red", String::format("%s", redValue))
+		publish("ohmqtt", "katyled/colour/green", String::format("%s", greenValue))
+		publish("ohmqtt", "katyled/colour/blue", String::format("%s", blueValue))		
+end
+
+rule "Change type lamp in Kate Room"
+	when
+		Item SelectKateTypeLED changed
+	then
+		publish("ohmqtt", "katyled/type/lamp", String::format("%s", SelectKateTypeLED.state))
 end
