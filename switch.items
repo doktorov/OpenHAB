@@ -1,13 +1,17 @@
 Switch Switch1 {mqtt=">[ohmqtt:test/led:command:ON:1],>[ohmqtt:test/led:command:OFF:0]"}
 Switch Switch2 {mqtt=">[ohmqtt:test/led:command:ON:1],>[ohmqtt:test/led:command:OFF:0],<[ohmqtt:test/led:state:ON:1],<[ohmqtt:test/led:state:OFF:0]"}
-Number Temp_Balkon "Температура[%.2f °C]" {mqtt="<[ohmqtt:balkon/temp_balkon:state:default]"}
-Number Pressure_Balkon "Давление[%.2f Па]" {mqtt="<[ohmqtt:balkon/pressure_balkon:state:default]"}
-Switch SwitchHallway "" {mqtt=">[ohmqtt:hall/switch:command:ON:1814696],>[ohmqtt:hall/switch:command:OFF:1814692]"}
-Switch SwitchKate "" {mqtt=">[ohmqtt:hall/switch:command:ON:4266132],>[ohmqtt:hall/switch:command:OFF:4266136]"}
-Switch SwitchNikita "" {mqtt=">[ohmqtt:hall/switch:command:ON:13314916],>[ohmqtt:hall/switch:command:OFF:13314920]"}
-Switch SwitchBedroom1 "" {mqtt=">[ohmqtt:hall/switch:command:ON:897448],>[ohmqtt:hall/switch:command:OFF:897444]"}
-Switch SwitchBedroom2 "" {mqtt=">[ohmqtt:hall/switch:command:ON:897442],>[ohmqtt:hall/switch:command:OFF:897441]"}
-Number Temp_Street "Температура[%.2f °C]" {mqtt="<[ohmqtt:street/temp_street:state:default]"}
-Number Pressure_Street "Давление[%.2f Па]" {mqtt="<[ohmqtt:street/pressure_street:state:default]"}
-Number Humidity_Street "Влажность[%.2f %%]" {mqtt="<[ohmqtt:street/humidity_street:state:default]"}
-Switch SwitchKitchen "" {mqtt=">[ohmqtt:hall/switch:command:ON:899000],>[ohmqtt:hall/switch:command:OFF:899001]"}
+Number Temp_Hallway "Температура[%.2f °C]" {mqtt="<[ohmqtt:home/hallway/temp:state:default]"}
+Number Humidity_Hallway "Влажность[%.2f %%]" {mqtt="<[ohmqtt:home/hallway/humidity:state:default]"}
+Switch SwitchHallway "" (Lights) {mqtt=">[ohmqtt:hall/switch:command:ON:1814696],>[ohmqtt:hall/switch:command:OFF:1814692]"}
+Switch SwitchKate "" (Lights) {mqtt=">[ohmqtt:hall/switch:command:ON:4266132],>[ohmqtt:hall/switch:command:OFF:4266136]"}
+Switch SwitchNikita "" (Lights) {mqtt=">[ohmqtt:hall/switch:command:ON:13314916],>[ohmqtt:hall/switch:command:OFF:13314920]"}
+Switch SwitchBedroom1 "" (Lights) {mqtt=">[ohmqtt:hall/switch:command:ON:897448],>[ohmqtt:hall/switch:command:OFF:897444]"}
+Switch SwitchBedroom2 "" (Lights) {mqtt=">[ohmqtt:hall/switch:command:ON:897442],>[ohmqtt:hall/switch:command:OFF:897441]"}
+Number Temp_Street_South "Температура ЮГ[%.2f °C]" {mqtt="<[ohmqtt:street/temp_street:state:default]"}
+Number Pressure_Street_South "Давление[%.2f Па]" {mqtt="<[ohmqtt:street/pressure_street:state:default]"}
+Number Humidity_Street_South "Влажность[%.2f %%]" {mqtt="<[ohmqtt:street/humidity_street:state:default]"}
+Number Temp_Street_North "Температура Север[%.2f °C]" {mqtt="<[ohmqtt:street/temp/north:state:default]"}
+Switch SwitchKitchen "" (Lights) {mqtt=">[ohmqtt:hall/switch:command:ON:899000],>[ohmqtt:hall/switch:command:OFF:899001]"}
+Dimmer DimmedKateLED "Dimmer [%d %%]" {hue="3;brightness;30"}
+Color  ColorKateRGBLED  "RGB Light" 
+Number SelectKateTypeLED  "Scene" 
