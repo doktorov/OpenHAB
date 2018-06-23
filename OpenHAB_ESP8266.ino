@@ -2,21 +2,23 @@
 #include <PubSubClient.h>
 
 #include <Adafruit_Sensor.h>
-#include <Adafruit_BMP280.h>
+//#include <Adafruit_BMP280.h>
+#include <Adafruit_HTU21DF.h>
 
 #include <RCSwitch.h>
 
 #define CLIENT_NAME "clientSwitch"
 
-Adafruit_BMP280 bmp; // I2C
+//Adafruit_BMP280 bmp; // I2C
+Adafruit_HTU21DF htu = Adafruit_HTU21DF();
 
 const char *ssid =  "Ntk-39";  // Имя вайфай точки доступа
 const char *password =  "506938506938"; // Пароль от точки доступа
 
 const char *mqtt_server = "192.168.1.106"; // Имя сервера MQTT
 const int mqtt_port = 1883; // Порт для подключения к серверу MQTT
-const char *mqtt_user = "openhabian"; // Логи от сервер
-const char *mqtt_pass = "openhabian"; // Пароль от сервера
+//const char *mqtt_user = ""; // Логи от сервер
+//const char *mqtt_pass = ""; // Пароль от сервера
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -34,9 +36,15 @@ void setup() {
 
   mySwitch.enableTransmit(D4);  
 
-  Serial.println(F("BMP280 test"));
-  if (!bmp.begin()) {
-    Serial.println(F("Could not find a valid BMP280 sensor, check wiring!"));
+//  Serial.println(F("BMP280 test"));
+//  if (!bmp.begin()) {
+//    Serial.println(F("Could not find a valid BMP280 sensor, check wiring!"));
+//    while (1);
+//  }
+
+  Serial.println("HTU21D-F test");
+  if (!htu.begin()) {
+    Serial.println("Couldn't find sensor!");
     while (1);
   }
 
@@ -108,15 +116,26 @@ void callback(char* topic, byte* payload, unsigned int length) {
 void tempSend() {
   if (tm == 0) {
     if (client.connect(CLIENT_NAME)) {
-      sprintf(t1, "%s", String(bmp.readTemperature()).c_str());
-      Serial.print("Temperature = ");
-      Serial.println(t1);
-      client.publish("balkon/temp_balkon", t1);
+//      sprintf(t1, "%s", String(bmp.readTemperature()).c_str());
+//      Serial.print("Temperature = ");
+//      Serial.println(t1);
+//      client.publish("balkon/temp_balkon", t1);
+//
+//      sprintf(t1, "%s", String(bmp.readPressure() / 100 * 0.75).c_str());
+//      Serial.print("Pressure = ");
+//      Serial.println(t1);
+//      client.publish("balkon/pressure_balkon", t1);
 
-      sprintf(t1, "%s", String(bmp.readPressure() / 100 * 0.75).c_str());
-      Serial.print("Pressure = ");
-      Serial.println(t1);
-      client.publish("balkon/pressure_balkon", t1);
+        Serial.println("HTU21DF");
+        sprintf(t1, "%s", String(htu.readTemperature()).c_str());     
+        Serial.print("Temperature = ");
+        Serial.println(t1);
+        client.publish("home/hallway/temp", t1);
+
+        sprintf(t1, "%s", String(htu.readHumidity()).c_str());  
+        Serial.print("Humidity = ");
+        Serial.println(t1);
+        client.publish("home/hallway/humidity", t1);
     }
     tm = 300;
   }
