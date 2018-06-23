@@ -7,7 +7,17 @@
 	}
 	
 	Frame label="Катя" {
-		Switch item=SwitchKate icon="girl_5" mappings=[ON="Включить", OFF="Выключить"]
+		Text label="Катя" icon="girl_5" {
+			Frame label="Люстра" {
+				Switch item=SwitchKate icon="wallswitch" mappings=[ON="Включить", OFF="Выключить"]
+			}
+			
+			Frame label="Лампа" {
+				Slider item=DimmedKateLED label="Яркость"
+				Colorpicker item=ColorKateRGBLED label="Цвет"  icon="slider"
+				Selection item=SelectKateTypeLED label="Тип" mappings=[0="Свет", 1="Огонь", 2="Радуга 1", 3="Радуга 2", 4="Радуга 3"]
+			}
+		}
 	}
 	
 	Frame label="Никита" {
@@ -19,14 +29,48 @@
 		Switch item=SwitchBedroom2 icon="bedroom" mappings=[ON="Включить", OFF="Выключить"]
 	}
 	
-	Frame label="Дом" {	
-		Text item=Temp_Balkon icon="temperature"
-		Text item=Pressure_Balkon icon="pressure"
+	Frame label="" {
+		Text item=CurrentDate
+		Switch item=Lights mappings=[OFF="Выключить всё"]
 	}
 	
-	Frame label="Погода на улице" {	
-		Text item=Temp_Street icon="temperature"
-		Text item=Pressure_Street icon="pressure"
-		Text item=Humidity_Street icon="humidity"
-	}
+	Frame label="Погода" {
+		Text label="Погода" icon="temperature" {
+			Frame label="Дом" {	
+				Text item=Temp_Hallway icon="temperature"
+				Text item=Humidity_Hallway icon="humidity"
+			}
+			
+			Frame label="Погода на улице" {	
+				Text item=Temp_Street_North icon="temperature"
+				Text item=Temp_Street_South icon="temperature"
+				Text item=Pressure_Street_South icon="pressure"
+				Text item=Humidity_Street_South icon="humidity"
+			}
+			
+			Frame label="Температура на улице" item=Weather_Temperature valuecolor=[Weather_LastUpdate=="NULL"="lightgray",Weather_LastUpdate>90="lightgray",>25="orange",>15="green",>5="orange",<=5="blue"] {				
+				Frame {
+					Text item=Weather_Temp_Max valuecolor=[>25="orange",>15="green",>5="orange",<=5="blue"]
+					Text item=Weather_Temp_Min valuecolor=[>25="orange",>15="green",>5="orange",<=5="blue"]
+					Text item=Weather_LastUpdate visibility=[Weather_LastUpdate>30] valuecolor=[Weather_LastUpdate>120="orange", Weather_LastUpdate>300="red"]
+				}
+				Frame {
+					Switch item=Weather_Chart_Period label="Диаграмма" icon="chart" mappings=[0="Час", 1="День", 2="Неделя"]
+					Chart item=Weather_Chart period=h refresh=600000 visibility=[Weather_Chart_Period==0, Weather_Chart_Period=="NULL"]
+					Chart item=Weather_Chart period=D refresh=3600000 visibility=[Weather_Chart_Period==1]
+					Chart item=Weather_Chart period=W refresh=3600000 visibility=[Weather_Chart_Period==2]
+				}				
+			}
+			
+			Frame label="Астрономические данные" icon="sun" {					
+				Text item=Sun_Elevation
+				Text item=Sun_Azimuth
+				Text item=Sunrise_Time
+				Text item=Sunset_Time
+				Text item=Moon_Elevation
+				Text item=Moon_Azimuth
+				Text item=Moon_Phase				
+			}
+		}	
 	
+	}
